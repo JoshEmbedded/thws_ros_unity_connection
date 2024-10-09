@@ -1,0 +1,19 @@
+<launch>
+    <!-- Load the custom Gazebo world -->
+    <arg name="world_name" default="$(find weldingrobot)/worlds/welding.world"/>
+
+    <node pkg="gazebo_ros" type="gazebo" name="gazebo" args="$(arg world_name)" output="screen">
+        <param name="use_sim_time" value="true"/>
+    </node>
+
+    <!-- Load the UR5e model -->
+    <param name="robot_description" command="$(find xacro)/xacro '$(find ur_description)/urdf/ur5e.xacro'"/>
+
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+        <remap from="/robot_description" to="/robot_description"/>
+    </node>
+
+    <!-- Spawn the UR5e robot -->
+    <node pkg="gazebo_ros" type="spawn_model" name="spawn_ur5e" output="screen"
+          args="-param robot_description -urdf -model ur5e -x 0 -y 0 -z 0.5"/>
+</launch>
