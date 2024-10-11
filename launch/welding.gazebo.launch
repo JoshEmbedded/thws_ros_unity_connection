@@ -8,7 +8,12 @@
     <include file="$(find ur5e_moveit_config)/launch/moveit_rviz.launch">
     </include>
 
-    <include file="$(dirname)/ur5e_bringup_custom.launch"/>
+    <include file="$(dirname)/ur5e_bringup_custom.launch">
+        <arg name="paused" value="true"/>     
+    </include>
+
+    <!-- Start Gazebo in pause mode -->
+    <node name="unpause_gazebo" pkg="std_srvs" type="Empty" respawn="false" output="screen" args="/gazebo/unpause" />
     
     <!-- Load the custom Gazebo world
     <arg name="world_name" default="$(find weldingrobot)/worlds/welding.world"/>
