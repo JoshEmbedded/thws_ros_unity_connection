@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -g  -shared -Wl,-soname,libweldingPath_lib.so -o devel/lib/libweldingPath_lib.so CMakeFiles/weldingPath_lib.dir/src/weldingPath.cpp.o 
