@@ -904,6 +904,7 @@ CMakeFiles/pose_send.dir/all: CMakeFiles/sensor_msgs_generate_messages_lisp.dir/
 CMakeFiles/pose_send.dir/all: CMakeFiles/sensor_msgs_generate_messages_nodejs.dir/all
 CMakeFiles/pose_send.dir/all: CMakeFiles/shape_msgs_generate_messages_lisp.dir/all
 CMakeFiles/pose_send.dir/all: CMakeFiles/trajectory_msgs_generate_messages_lisp.dir/all
+CMakeFiles/pose_send.dir/all: CMakeFiles/weldingPath_lib.dir/all
 CMakeFiles/pose_send.dir/all: CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/all
 CMakeFiles/pose_send.dir/all: CMakeFiles/actionlib_generate_messages_eus.dir/all
 CMakeFiles/pose_send.dir/all: CMakeFiles/trajectory_msgs_generate_messages_py.dir/all
@@ -914,7 +915,7 @@ CMakeFiles/pose_send.dir/all: CMakeFiles/trajectory_msgs_generate_messages_py.di
 
 # Build rule for subdir invocation for target.
 CMakeFiles/pose_send.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/joshua/weldingrobot/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/joshua/weldingrobot/build/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/pose_send.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/joshua/weldingrobot/build/CMakeFiles 0
 .PHONY : CMakeFiles/pose_send.dir/rule

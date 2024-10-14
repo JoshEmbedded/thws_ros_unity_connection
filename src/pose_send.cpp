@@ -3,6 +3,8 @@
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
 #include <moveit_msgs/DisplayTrajectory.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/Pose.h>
+#include <weldingrobot/weldingPath.h>
 
 int main(int argc, char** argv)
 {
@@ -11,30 +13,37 @@ int main(int argc, char** argv)
     ros::AsyncSpinner spinner(1);
     spinner.start();
 
-    // Initialize MoveGroupInterface for UR5
-    moveit::planning_interface::MoveGroupInterface move_group("manipulator");
 
-    // Set a target pose for the end-effector
-    geometry_msgs::Pose target_pose;
-    target_pose.orientation.w = 1.0;
-    target_pose.position.x = 0.4;
-    target_pose.position.y = 0.2;
-    target_pose.position.z = 0.5;
+    // Initalise object of welding path
+    weldingPath robot("Manipulator");
 
-    move_group.setPoseTarget(target_pose);
+    // // Example poses to pass into the planner
+    // std::vector<geometry_msgs::Pose> poses;
 
-    // Plan and execute the motion
-    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-    bool success = (move_group.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    // Pose 1
+    geometry_msgs::Pose pose1;
+    pose1.position.x = 0.4;
+    pose1.position.y = 0.2;
+    pose1.position.z = 0.5;
+    pose1.orientation.w = 1.0;
+    robot.addPose(pose1);
 
-    if (success)
+    // Pose 2
+    geometry_msgs::Pose pose2;
+    pose2.position.x = 0.5;
+    pose2.position.y = 0.3;
+    pose2.position.z = 0.6;
+    pose2.orientation.w = 1.0;
+    robot.addPose(pose2);
+
+    
+
+    // move_group.setPoseTarget(pose1);
+
+    // Compute and execute trajectory
+    if (robot.computeTrajectory())
     {
-        ROS_INFO("Planning successful. Executing...");
-        move_group.move();
-    }
-    else
-    {
-        ROS_WARN("Planning failed!");
+        robot.executeTrajectory();
     }
 
     ros::shutdown();

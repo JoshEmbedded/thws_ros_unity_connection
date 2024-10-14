@@ -1,12 +1,12 @@
 [
 {
   "directory": "/home/joshua/weldingrobot/build",
-  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"weldingrobot\\\" -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3 -I/usr/include/bullet  -g   -o CMakeFiles/pose_send.dir/src/pose_send.cpp.o -c /home/joshua/weldingrobot/src/pose_send.cpp",
+  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"weldingrobot\\\" -I/home/joshua/weldingrobot/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3 -I/usr/include/bullet  -g   -o CMakeFiles/pose_send.dir/src/pose_send.cpp.o -c /home/joshua/weldingrobot/src/pose_send.cpp",
   "file": "/home/joshua/weldingrobot/src/pose_send.cpp"
 },
 {
   "directory": "/home/joshua/weldingrobot/build",
-  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"weldingrobot\\\" -DweldingPath_lib_EXPORTS -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3 -I/usr/include/bullet  -g -fPIC   -o CMakeFiles/weldingPath_lib.dir/src/weldingPath.cpp.o -c /home/joshua/weldingrobot/src/weldingPath.cpp",
+  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"weldingrobot\\\" -DweldingPath_lib_EXPORTS -I/home/joshua/weldingrobot/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include/eigen3 -I/usr/include/bullet  -g -fPIC   -o CMakeFiles/weldingPath_lib.dir/src/weldingPath.cpp.o -c /home/joshua/weldingrobot/src/weldingPath.cpp",
   "file": "/home/joshua/weldingrobot/src/weldingPath.cpp"
 },
 {

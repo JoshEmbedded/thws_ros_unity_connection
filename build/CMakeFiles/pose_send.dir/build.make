@@ -79,6 +79,7 @@ pose_send_EXTERNAL_OBJECTS =
 
 devel/lib/weldingrobot/pose_send: CMakeFiles/pose_send.dir/src/pose_send.cpp.o
 devel/lib/weldingrobot/pose_send: CMakeFiles/pose_send.dir/build.make
+devel/lib/weldingrobot/pose_send: devel/lib/libweldingPath_lib.so
 devel/lib/weldingrobot/pose_send: /opt/ros/noetic/lib/libmoveit_common_planning_interface_objects.so
 devel/lib/weldingrobot/pose_send: /opt/ros/noetic/lib/libmoveit_planning_scene_interface.so
 devel/lib/weldingrobot/pose_send: /opt/ros/noetic/lib/libmoveit_move_group_interface.so
