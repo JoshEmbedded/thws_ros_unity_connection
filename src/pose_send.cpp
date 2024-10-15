@@ -15,7 +15,13 @@ int main(int argc, char** argv)
 
 
     // Initalise object of welding path
-    weldingPath robot("Manipulator");
+    weldingPath robot("manipulator");
+
+    // Create a publisher to publish planned trajectories to RViz
+    ros::Publisher display_publisher = node_handle.advertise<moveit_msgs::DisplayTrajectory>("/move_group/display_planned_path", 1);
+
+    // Set the publisher in the weldingPath object
+    robot.setDisplayPublisher(display_publisher);
 
     // // Example poses to pass into the planner
     // std::vector<geometry_msgs::Pose> poses;
@@ -35,8 +41,6 @@ int main(int argc, char** argv)
     pose2.position.z = 0.6;
     pose2.orientation.w = 1.0;
     robot.addPose(pose2);
-
-    
 
     // move_group.setPoseTarget(pose1);
 

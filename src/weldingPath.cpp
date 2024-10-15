@@ -1,7 +1,7 @@
 #include <weldingrobot/weldingPath.h>
 
 // Default Constructor
-weldingPath::weldingPath() 
+weldingPath::weldingPath()
     : move_group_("manipulator") // default to manipulator if no group is provided
 {
     move_group_.setMaxVelocityScalingFactor(0.1);
@@ -76,6 +76,17 @@ bool weldingPath::computeTrajectory()
 
     // Store the trajectory for later execution
     planned_trajectory_ = trajectory;
+
+    // Visualize the planned trajectory in RViz
+    moveit_msgs::DisplayTrajectory display_trajectory;
+
+    // Use getCurrentState() directly to populate the RobotState
+    moveit::core::RobotStatePtr current_state = move_group_.getCurrentState();
+    moveit::core::robotStateToRobotStateMsg(*current_state, display_trajectory.trajectory_start);
+
+    // Publish the trajectory to RViz
+    display_publisher_.publish(display_trajectory);
+
     return true;
 }
 
@@ -89,4 +100,9 @@ void weldingPath::executeTrajectory()
     }
 
     move_group_.execute(planned_trajectory_);
+}
+
+void weldingPath::setDisplayPublisher(const ros::Publisher &publisher)
+{
+    display_publisher_ = publisher;
 }
