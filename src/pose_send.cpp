@@ -15,7 +15,7 @@ int main(int argc, char** argv)
 
 
     // Initalise object of welding path
-    weldingPath robot("Manipulator");
+    weldingPath robot("manipulator");
 
     // // Example poses to pass into the planner
     // std::vector<geometry_msgs::Pose> poses;
