@@ -16,10 +16,12 @@ private:
     geometry_msgs::Pose startPose_; // Pose for starting weld
     geometry_msgs::Pose endPose_; // Pose for ending weld
 
-    moveit::planning_interface::MoveGroupInterface move_group_;
+    
     moveit_msgs::RobotTrajectory planned_trajectory_;
 
 public:
+
+    moveit::planning_interface::MoveGroupInterface move_group_;
 
     weldingPath();
 
@@ -48,6 +50,12 @@ public:
 
     // Execute the planned trajectory
     void executeTrajectory();
+
+    // Evaluate single pose trajectory
+    bool singlePoseTrajectory(geometry_msgs::Pose Pose);
+
+    // Method for moving into starting position
+    void startWeldPosition();
 
 };
 

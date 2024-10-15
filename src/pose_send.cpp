@@ -8,19 +8,33 @@
 #include <moveit_msgs/MoveItErrorCodes.h>
 #include <moveit_msgs/DisplayTrajectory.h>
 
+
+/*
+/// This is an example callback to use later for the oculus welding points
+void weldingPoseCallback(const std::vector<geometry_msgs::Pose msg)
+{
+
+}
+*/
+
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "pose_send");
     ros::NodeHandle node_handle;
+
+    
+    /*
+    // Prepare a fake subscriber for when the points are published from Oculus
+
+    ros::Subscriber sub = node_handle.subscribe("<topic_name for pose>", 1000, weldingPoseCallback);
+    
+    */
+
     ros::AsyncSpinner spinner(1);
     spinner.start();
 
-
     // Initalise object of welding path
     weldingPath robot("manipulator");
-
-    // // Example poses to pass into the planner
-    // std::vector<geometry_msgs::Pose> poses;
 
     // Pose 1
     geometry_msgs::Pose pose1;
@@ -38,7 +52,35 @@ int main(int argc, char** argv)
     pose2.orientation.w = 1.0;
     robot.addPose(pose2);
 
-    // move_group.setPoseTarget(pose1);
+    // Pose 3
+    geometry_msgs::Pose pose3;
+    pose1.position.x = 0.5;
+    pose1.position.y = 0.4;
+    pose1.position.z = 0.5;
+    pose1.orientation.w = 1.0;
+    robot.addPose(pose3);
+
+    // Pose 2
+    geometry_msgs::Pose pose4;
+    pose2.position.x = 0.4;
+    pose2.position.y = 0.2;
+    pose2.position.z = 1;
+    pose2.orientation.w = 1.0;
+    robot.addPose(pose4);
+
+    robot.startWeldPosition();
+
+    std::cout << "Number of pose left: " << robot.poseCount() <<std::endl;
+    
+    ROS_INFO("Node paused, waiting for user input...");
+
+    // Pause and wait for user input
+    std::string input;
+    std::cout << "Press Enter to continue..." << std::endl;
+   
+    std::getline(std::cin, input);  // Waits for user to press Enter
+
+    ROS_INFO("User input received. Continuing execution...");
 
     // Compute and execute trajectory
     if (robot.computeTrajectory())
