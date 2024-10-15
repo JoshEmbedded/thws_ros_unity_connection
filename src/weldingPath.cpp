@@ -66,6 +66,7 @@ bool weldingPath::computeTrajectory()
 
     moveit_msgs::RobotTrajectory trajectory;
 
+
     double fraction = move_group_.computeCartesianPath(waypoints, 0.01, 0.0, trajectory);
 
     if (fraction < 0.95)
@@ -84,8 +85,16 @@ bool weldingPath::computeTrajectory()
     moveit::core::RobotStatePtr current_state = move_group_.getCurrentState();
     moveit::core::robotStateToRobotStateMsg(*current_state, display_trajectory.trajectory_start);
 
+    // Clear previous trajectories (prevents showing the path twice)
+    display_trajectory.trajectory.clear();
+
+    // Add the planned trajectory to display_trajectory
+    display_trajectory.trajectory.push_back(planned_trajectory_); // Add the planned trajectory
+
     // Publish the trajectory to RViz
     display_publisher_.publish(display_trajectory);
+
+    display_trajectory.model_id.clear();
 
     return true;
 }
