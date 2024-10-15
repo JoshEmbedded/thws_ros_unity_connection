@@ -43,7 +43,19 @@ int main(int argc, char** argv)
     // Compute and execute trajectory
     if (robot.computeTrajectory())
     {
-        robot.executeTrajectory();
+        // Ask for user confirmation to execute the trajectory
+        std::string user_input;
+        std::cout << "Do you want to execute the trajectory? (y/n): ";
+        std::cin >> user_input;
+
+        if (user_input == "y" || user_input == "Y")
+        {
+            robot.executeTrajectory();
+        }
+        else
+        {
+            std::cout << "Trajectory execution canceled." << std::endl;
+        }
     }
 
     ros::shutdown();
