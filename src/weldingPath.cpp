@@ -66,13 +66,36 @@ bool weldingPath::computeTrajectory()
 
     moveit_msgs::RobotTrajectory trajectory;
 
-    double fraction = move_group_.computeCartesianPath(waypoints, 0.01, 0.0, trajectory);
+    // Create a MoveItErrorCodes object
+    moveit_msgs::MoveItErrorCodes error_code;
 
+    double eef_step = 0.01; // End effector step size
+    double jump_threshold = 0.0; // Jump threshold
+    bool avoid_collisions = true; // Collision avoidance
+
+    // Compute the Cartesian path
+    double fraction = move_group_.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory, avoid_collisions, &error_code);
+
+    // Check the error code
+    if (error_code.val != moveit_msgs::MoveItErrorCodes::SUCCESS)
+    {
+        ROS_WARN("Path planning failed with error code: %d", error_code.val);
+        return false;
+    }
+
+    if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
+    {
+        ROS_INFO("Path planning is successful, path achieved: %.2f.", fraction);
+    }
+    
+    
     if (fraction < 0.95)
     {
         ROS_WARN("Could not plan a complete trajectory, only %.2f of the path was planned.", fraction);
         return false;
     }
+
+    
 
     // Store the trajectory for later execution
     planned_trajectory_ = trajectory;

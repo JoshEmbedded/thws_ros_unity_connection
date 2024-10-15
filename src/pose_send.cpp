@@ -5,6 +5,8 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Pose.h>
 #include <weldingrobot/weldingPath.h>
+#include <moveit_msgs/MoveItErrorCodes.h>
+#include <moveit_msgs/DisplayTrajectory.h>
 
 int main(int argc, char** argv)
 {
@@ -35,8 +37,6 @@ int main(int argc, char** argv)
     pose2.position.z = 0.6;
     pose2.orientation.w = 1.0;
     robot.addPose(pose2);
-
-    
 
     // move_group.setPoseTarget(pose1);
 
