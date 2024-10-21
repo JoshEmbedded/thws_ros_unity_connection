@@ -55,7 +55,7 @@ public:
     bool singlePoseTrajectory(geometry_msgs::Pose Pose);
 
     // Method for moving into starting position
-    void startWeldPosition();
+    bool startWeldPosition();
 
 };
 

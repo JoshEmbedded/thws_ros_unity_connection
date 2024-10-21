@@ -90,23 +90,15 @@ bool weldingPath::computeTrajectory()
         ROS_WARN("Path planning failed: INVALID_ROBOT_STATE (Invalid robot state for planning)");
         break;
     default:
-        ROS_WARN("Path planning failed with unknown error code: %d", error_code.val);
+        ROS_INFO("Path planning is successful, path achieved: %.2f.", fraction);
         break;
     }
 
     // Check the error code
     if (error_code.val != moveit_msgs::MoveItErrorCodes::SUCCESS)
     {
-        ROS_WARN("Path planning failed with error code: %d", error_code.val);
-        return false;
+       return false;
     }
-
-    if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
-    {
-        ROS_INFO("Path planning is successful, path achieved: %.2f.", fraction);
-    }
-    
-
     // Store the trajectory for later execution
     planned_trajectory_ = trajectory;
     return true;
@@ -145,15 +137,17 @@ bool weldingPath::singlePoseTrajectory(geometry_msgs::Pose Pose)
 }
 
 //Method for moving into starting position
-void weldingPath::startWeldPosition()
+bool weldingPath::startWeldPosition()
 {
-    if (singlePoseTrajectory(startPose_))
+    if (singlePoseTrajectory(poses_.front()))
     {
         ROS_INFO("Moving to desired pose");
         move_group_.move();
-        poses_.erase(poses_.begin()) ;
+        poses_.erase(poses_.begin());
+        return true;
     }
     else{
-        ROS_WARN("Failure to move to start position");
+        ROS_ERROR("Failure to move to start position");
+        return false;
     }
 }
