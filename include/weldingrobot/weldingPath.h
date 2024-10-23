@@ -30,6 +30,9 @@ public:
     // Method to add a pose to the vector
     void addPose(const geometry_msgs::Pose& pose);
 
+    // Method to add a vector of poses to the object
+    void addPoses(std::vector<geometry_msgs::Pose> poses);
+
     // Method to get all poses
     std::vector<geometry_msgs::Pose> getPoses() const;
 

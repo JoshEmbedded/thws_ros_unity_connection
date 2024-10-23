@@ -24,6 +24,10 @@ void weldingPath::addPose(const geometry_msgs::Pose &pose)
     endPose_ = poses_.back();
 }
 
+void weldingPath::addPoses(std::vector<geometry_msgs::Pose> pose_array){
+            poses_.insert(poses_.end(), pose_array.begin(), pose_array.end());
+}
+
 // Method to get all poses
 std::vector<geometry_msgs::Pose> weldingPath::getPoses() const
 {
@@ -139,6 +143,7 @@ bool weldingPath::singlePoseTrajectory(geometry_msgs::Pose Pose)
 //Method for moving into starting position
 bool weldingPath::startWeldPosition()
 {
+
     if (singlePoseTrajectory(poses_.front()))
     {
         ROS_INFO("Moving to desired pose");
