@@ -48,8 +48,8 @@ def getWeldingCoordinates(df_list):
     for point in df_list:
         pose = Pose()  # Create a Pose object
         pose.position.x = point[1] * 10**-3  # X
-        pose.position.y = point[3] * 10**-3  # Y - unity uses y as vertical axis instead of z
-        pose.position.z = point[2] * 10**-3  # Z
+        pose.position.y = point[2] * 10**-3  # Y 
+        pose.position.z = - point[3] * 10**-3  # Z (negative because the robot is upside down)
         pose.orientation.x = point[7]  # Quaternion X
         pose.orientation.y = point[8]  # Quaternion Y
         pose.orientation.z = point[9]  # Quaternion Z
