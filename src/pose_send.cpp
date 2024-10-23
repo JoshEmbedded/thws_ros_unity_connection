@@ -24,17 +24,19 @@ int main(int argc, char** argv)
 
     // Pose 1
     geometry_msgs::Pose pose1;
-    pose1.position.x = 0.4;
-    pose1.position.y = 0.2;
-    pose1.position.z = 0.5;
+    pose1.position.x = 0.552;
+    pose1.position.y = 0.435 ;
+    pose1.position.z = 0.864;
     pose1.orientation.w = 1.0;
+
+    
     robot.addPose(pose1);
 
     // Pose 2
     geometry_msgs::Pose pose2;
-    pose2.position.x = 0.5;
-    pose2.position.y = 0.3;
-    pose2.position.z = 0.6;
+    pose2.position.x = 0.37;
+    pose2.position.y = 0.4;
+    pose2.position.z = 0.889;
     pose2.orientation.w = 1.0;
     robot.addPose(pose2);
 
