@@ -24,6 +24,10 @@ void weldingPath::addPose(const geometry_msgs::Pose &pose)
     endPose_ = poses_.back();
 }
 
+void weldingPath::addPoses(std::vector<geometry_msgs::Pose> pose_array){
+            poses_.insert(poses_.end(), pose_array.begin(), pose_array.end());
+}
+
 // Method to get all poses
 std::vector<geometry_msgs::Pose> weldingPath::getPoses() const
 {
@@ -76,27 +80,29 @@ bool weldingPath::computeTrajectory()
     // Compute the Cartesian path
     double fraction = move_group_.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory, avoid_collisions, &error_code);
 
+    switch (error_code.val) {
+    case moveit_msgs::MoveItErrorCodes::PLANNING_FAILED:
+        ROS_WARN("Path planning failed: PLANNING_FAILED");
+        break;
+    case moveit_msgs::MoveItErrorCodes::INVALID_MOTION_PLAN:
+        ROS_WARN("Path planning failed: INVALID_MOTION_PLAN");
+        break;
+    case moveit_msgs::MoveItErrorCodes::NO_IK_SOLUTION:
+        ROS_WARN("Path planning failed: NO_IK_SOLUTION (No valid IK solution found)");
+        break;
+    case moveit_msgs::MoveItErrorCodes::INVALID_ROBOT_STATE:
+        ROS_WARN("Path planning failed: INVALID_ROBOT_STATE (Invalid robot state for planning)");
+        break;
+    default:
+        ROS_INFO("Path planning is successful, path achieved: %.2f.", fraction);
+        break;
+    }
+
     // Check the error code
     if (error_code.val != moveit_msgs::MoveItErrorCodes::SUCCESS)
     {
-        ROS_WARN("Path planning failed with error code: %d", error_code.val);
-        return false;
+       return false;
     }
-
-    if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
-    {
-        ROS_INFO("Path planning is successful, path achieved: %.2f.", fraction);
-    }
-    
-    
-    if (fraction < 0.95)
-    {
-        ROS_WARN("Could not plan a complete trajectory, only %.2f of the path was planned.", fraction);
-        return false;
-    }
-
-    
-
     // Store the trajectory for later execution
     planned_trajectory_ = trajectory;
     return true;
@@ -112,4 +118,41 @@ void weldingPath::executeTrajectory()
     }
 
     move_group_.execute(planned_trajectory_);
+}
+
+// Method for single pose trajectory
+bool weldingPath::singlePoseTrajectory(geometry_msgs::Pose Pose)
+{
+
+    move_group_.setPoseTarget(Pose);
+
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    bool success = (move_group_.plan(my_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+
+    // Check if path is possible
+    if (success == false)
+    {
+        ROS_WARN("Planning failed.");
+        return false;
+    }
+
+    ROS_INFO("Planning successful.");
+    return true;
+}
+
+//Method for moving into starting position
+bool weldingPath::startWeldPosition()
+{
+
+    if (singlePoseTrajectory(poses_.front()))
+    {
+        ROS_INFO("Moving to desired pose");
+        move_group_.move();
+        poses_.erase(poses_.begin());
+        return true;
+    }
+    else{
+        ROS_ERROR("Failure to move to start position");
+        return false;
+    }
 }

@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: weldingrobot
-Description: Description of weldingrobot
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

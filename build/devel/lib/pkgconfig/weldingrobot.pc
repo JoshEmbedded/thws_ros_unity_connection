@@ -1,8 +1,0 @@
-prefix=/home/joshua/weldingrobot/build/devel
-
-Name: weldingrobot
-Description: Description of weldingrobot
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
