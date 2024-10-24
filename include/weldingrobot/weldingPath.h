@@ -54,14 +54,14 @@ public:
     // Execute the planned trajectory
     void executeTrajectory();
 
-    // Evaluate single pose trajectory
-    bool singlePoseTrajectory(geometry_msgs::Pose Pose);
-
     // Method for moving into starting position
     bool startWeldPosition();
 
     // Method for checking move it error
     bool handlePlanError(moveit::core::MoveItErrorCode my_plan);
+
+    // Method for following welding path
+    bool weldPath();
 
 };
 
