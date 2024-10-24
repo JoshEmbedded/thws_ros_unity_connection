@@ -12,8 +12,7 @@
         <arg name="paused" value="true"/>     
     </include>
 
-    <!-- Start Gazebo in pause mode -->
+    Start Gazebo in pause mode
     <node name="unpause_gazebo" pkg="std_srvs" type="Empty" respawn="false" output="screen" args="/gazebo/unpause" />
-    
 
 </launch>
