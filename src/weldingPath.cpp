@@ -122,53 +122,17 @@ void weldingPath::executeTrajectory()
     move_group_.execute(planned_trajectory_);
 }
 
-// // Method for single pose trajectory
-// bool weldingPath::singlePoseTrajectory(geometry_msgs::Pose Pose)
-// {
-
-//     move_group_.setPoseTarget(Pose);
-
-//     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
-
-//     moveit::planning_interface::MoveItErrorCode planning_result = move_group_.plan(my_plan);
-
-//     if (handlePlanError(planning_result)){
-
-//     }
-
-//     // // Check if path is possible
-//     // if (success == false)
-//     // {
-//     //     ROS_WARN("Planning failed.");
-//     //     return false;
-//     // }
-
-//     // ROS_INFO("Planning successful.");
-//     // return true;
-// }
-
 // Method for moving into starting position
 bool weldingPath::startWeldPosition()
 {
-
-    ROS_INFO("Entered startWeldPosition function");
-    ROS_INFO("Pose: %f", poses_.front().position.x);
     move_group_.setPoseTarget(poses_.front());
 
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
-    // moveit::core::MoveItErrorCode planning_result = move_group_.plan(my_plan);
-    
-    ROS_INFO("continued after the plan function");
-
     if (handlePlanError(move_group_.plan(my_plan)))
     {
-        ROS_INFO("entered the if");
-
         // Plan was successful, proceed with execution
         moveit::core::MoveItErrorCode execution_result = move_group_.execute(my_plan);
-
-        ROS_INFO("continued after the execute function");
 
         if (handlePlanError(execution_result))
         {
@@ -182,22 +146,8 @@ bool weldingPath::startWeldPosition()
             ROS_ERROR("Failure to move to start position");
             return false;
         }
-
-        
     }
     return false;
-
-    // if (singlePoseTrajectory(poses_.front()))
-    // {
-    //     ROS_INFO("Moving to desired pose");
-    //     move_group_.move();
-    //     poses_.erase(poses_.begin());
-    //     return true;
-    // }
-    // else{
-    //     ROS_ERROR("Failure to move to start position");
-    //     return false;
-    // }
 }
 
 // Method for checking MoveIt error
