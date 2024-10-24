@@ -5,8 +5,6 @@ project(weldingrobot)
 # add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
@@ -14,15 +12,12 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   tf2
   moveit_ros_planning_interface
+  moveit_core
 )
-
-## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
 
 ###################################
 ## catkin specific configuration ##
 ###################################
-## The catkin_package macro generates cmake config files for your package
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES weldingrobot
@@ -34,27 +29,34 @@ catkin_package(
 ## Build ##
 ###########
 
-
-
 ## Specify additional locations of header files
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${moveit_core_INCLUDE_DIRS}
+  ${moveit_ros_planning_interface_INCLUDE_DIRS}
 )
 
 ## Declare weldingPath.cpp as a library
 add_library(weldingPath_lib src/weldingPath.cpp)
 
+## Link the library to the executable
+target_link_libraries(weldingPath_lib
+    ${catkin_LIBRARIES}
+    ${moveit_core_LIBRARIES}
+    ${moveit_ros_planning_interface_LIBRARIES}
+)
+
 ## Declare a C++ executable
 add_executable(pose_send src/pose_send.cpp)
+
+## Add cmake target dependencies of the executable
+add_dependencies(pose_send ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} weldingPath_lib)
+
+## Link the library to the executable
+target_link_libraries(pose_send weldingPath_lib ${catkin_LIBRARIES})
 
 catkin_install_python(PROGRAMS
   src/csvPoints.py  # Update with the actual path to your Python script
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
-
-## Add cmake target dependencies of the executable
-add_dependencies(pose_send ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-## Link the library to the executable
-target_link_libraries(pose_send weldingPath_lib ${catkin_LIBRARIES})

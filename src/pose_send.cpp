@@ -8,23 +8,69 @@
 #include <weldingrobot/weldingPath.h>
 #include <moveit_msgs/MoveItErrorCodes.h>
 #include <moveit_msgs/DisplayTrajectory.h>
+#include <cmath> // For std::fabs()
 
 std::vector<geometry_msgs::Pose> received_poses; // Global or class member to store received poses
 
+// Function to compare two Pose objects with a tolerance
+bool are_poses_approx_equal(const geometry_msgs::Pose &p1, const geometry_msgs::Pose &p2, double tolerance)
+{
+    // Compare position
+    if (std::fabs(p1.position.x - p2.position.x) > tolerance ||
+        std::fabs(p1.position.y - p2.position.y) > tolerance ||
+        std::fabs(p1.position.z - p2.position.z) > tolerance)
+    {
+        return false;
+    }
+
+    // Compare orientation
+    if (std::fabs(p1.orientation.x - p2.orientation.x) > tolerance ||
+        std::fabs(p1.orientation.y - p2.orientation.y) > tolerance ||
+        std::fabs(p1.orientation.z - p2.orientation.z) > tolerance ||
+        std::fabs(p1.orientation.w - p2.orientation.w) > tolerance)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+// Function to check if two vectors of Pose are approximately equal
+bool are_poses_equal(const std::vector<geometry_msgs::Pose>& poses1, const std::vector<geometry_msgs::Pose>& poses2, double tolerance)
+{
+    if (poses1.size() != poses2.size()) {
+        return false;
+    }
+    
+    for (size_t i = 0; i < poses1.size(); ++i) {
+        if (!are_poses_approx_equal(poses1[i], poses2[i], tolerance)) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
 void poseArrayCallback(const geometry_msgs::PoseArray::ConstPtr &msg)
 {
-    // Clear previous poses
-    received_poses.clear();
+    // Set a small tolerance value (e.g., 0.001 for 1 mm/1e-3 m tolerance)
+    double tolerance = 0.001; // Adjust this value based on your precision needs
 
-    // Store the received poses
-    received_poses = msg->poses;
+    // Check if the new poses are the same as the currently stored poses within the tolerance
+    if (received_poses.empty() || !are_poses_equal(received_poses, msg->poses, tolerance)) {
+        // New poses are different or we haven't received any poses yet
+        received_poses = msg->poses;
 
-    // Log the received poses
-    for (const auto &pose : received_poses)
-    {
-        ROS_INFO("Received Pose - x: %f, y: %f, z: %f", pose.position.x, pose.position.y, pose.position.z);
+        // Log the received poses
+        for (const auto &pose : received_poses)
+        {
+            ROS_INFO("Received Pose - x: %f, y: %f, z: %f", pose.position.x, pose.position.y, pose.position.z);
+        }
+    } else {
+        // ROS_INFO("Received PoseArray is approximately identical to the previous one, ignoring.");
     }
 }
+
 
 int main(int argc, char **argv)
 {

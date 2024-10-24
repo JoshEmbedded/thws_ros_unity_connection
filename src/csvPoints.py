@@ -13,7 +13,7 @@ from scipy.spatial.transform import Rotation as R
 def updatePoints():
     # Read the CSV file
     base_dir = Path.home() / "weldingrobot"
-    file_path = base_dir / "include" / "oculus" / "csv" / "Path_1.csv"
+    file_path = base_dir / "include" / "oculus" / "csv" / "Path_1_corrected.csv"
 
     df = pd.read_csv(file_path)
     df_list = df.values.tolist()
@@ -24,7 +24,7 @@ def updatePoints():
     rot_z = df['RotZ'].values
 
     # Specify the rotation order
-    rotation_order = 'yxz'
+    rotation_order = 'xyz'
 
     # Create a Rotation object from Euler angles
     rotations = R.from_euler(rotation_order, np.column_stack((rot_x, rot_y, rot_z)), degrees=True)
@@ -49,7 +49,7 @@ def getWeldingCoordinates(df_list):
         pose = Pose()  # Create a Pose object
         pose.position.x = point[1] * 10**-3  # X
         pose.position.y = point[2] * 10**-3  # Y 
-        pose.position.z = - point[3] * 10**-3  # Z (negative because the robot is upside down)
+        pose.position.z = point[3] * 10**-3  # Z 
         pose.orientation.x = point[7]  # Quaternion X
         pose.orientation.y = point[8]  # Quaternion Y
         pose.orientation.z = point[9]  # Quaternion Z

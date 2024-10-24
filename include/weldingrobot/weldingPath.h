@@ -60,6 +60,9 @@ public:
     // Method for moving into starting position
     bool startWeldPosition();
 
+    // Method for checking move it error
+    bool handlePlanError(moveit::core::MoveItErrorCode my_plan);
+
 };
 
 #endif // WELDING_PATH_H
