@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -12,9 +13,9 @@ import portalocker
 import tf.transformations as tf_trans
 
 def updatePoints():
-    # Read the CSV file
-    base_dir = Path.home() / "weldingrobot"
-    file_path = base_dir / "include" / "oculus" / "csv" / "Path_1_corrected.csv"
+    
+
+    file_path = os.path.join(os.path.dirname(__file__), '..', 'include', 'oculus', 'csv', 'Path_1_corrected.csv')
 
     # Briefly lock and read the file
     with open(file_path, 'r') as file:
