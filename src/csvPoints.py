@@ -7,36 +7,23 @@ import rospy
 from geometry_msgs.msg import Pose
 from geometry_msgs.msg import Pose, PoseArray
 from scipy.spatial.transform import Rotation as R
-
-
+import time
+import portalocker
+import tf.transformations as tf_trans
 
 def updatePoints():
     # Read the CSV file
     base_dir = Path.home() / "weldingrobot"
     file_path = base_dir / "include" / "oculus" / "csv" / "Path_1_corrected.csv"
 
-    df = pd.read_csv(file_path)
+    # Briefly lock and read the file
+    with open(file_path, 'r') as file:
+        portalocker.lock(file, portalocker.LOCK_EX)
+        df = pd.read_csv(file)  # Read CSV file contents
+        portalocker.unlock(file)
+        
     df_list = df.values.tolist()
 
-    # Extract the rotation angles (assuming they're in degrees)
-    rot_x = df['RotX'].values
-    rot_y = df['RotY'].values
-    rot_z = df['RotZ'].values
-
-    # Specify the rotation order
-    rotation_order = 'xyz'
-
-    # Create a Rotation object from Euler angles
-    rotations = R.from_euler(rotation_order, np.column_stack((rot_x, rot_y, rot_z)), degrees=True)
-
-    # Convert to quaternions
-    quaternions = rotations.as_quat()  # This gives you an array of quaternions
-
-    # Add quaternion values to the original list
-    # Assuming df_list originally contains [X, Y, Z] format
-    for idx, quaternion in enumerate(quaternions):
-        df_list[idx].extend(quaternion.tolist())  # Append quaternion to each list entry
-        
     return df_list
 
 
@@ -50,10 +37,14 @@ def getWeldingCoordinates(df_list):
         pose.position.x = point[1] * 10**-3  # X
         pose.position.y = point[2] * 10**-3  # Y 
         pose.position.z = point[3] * 10**-3  # Z 
-        pose.orientation.x = point[7]  # Quaternion X
-        pose.orientation.y = point[8]  # Quaternion Y
-        pose.orientation.z = point[9]  # Quaternion Z
-        pose.orientation.w = point[10]  # Quaternion W
+        
+        # rotation conversion from rot to quarternion
+        
+        quaternion = tf_trans.quaternion_from_euler(np.deg2rad(point[4]),np.deg2rad(point[5]),np.deg2rad(point[6]))
+        pose.orientation.x = quaternion[0]
+        pose.orientation.y = quaternion[1]
+        pose.orientation.z = quaternion[2]
+        pose.orientation.w = quaternion[3]
 
         pose_array.poses.append(pose)  # Add the pose to the poseArray
 
@@ -66,8 +57,15 @@ def pose_array_publisher():
     pub = rospy.Publisher('weld_pose_topic', PoseArray, queue_size=10)
     rate = rospy.Rate(1)  # Publish at 1 Hz
 
+    last_update_time = time.time() - 10  # Ensure updatePoints runs immediately on first loop
+
+    points = updatePoints()  # Initial load of points
     while not rospy.is_shutdown():
-        points = updatePoints()  # Update points from CSV
+        # Update points every 10 seconds
+        if time.time() - last_update_time >= 10:
+            points = updatePoints()  # Refresh points from CSV
+            last_update_time = time.time()
+
         pose_array = getWeldingCoordinates(points)  # Get PoseArray
         pub.publish(pose_array)  # Publish the PoseArray
         rate.sleep()  # Sleep to maintain the publish rate
