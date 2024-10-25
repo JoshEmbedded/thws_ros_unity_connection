@@ -81,7 +81,7 @@ bool weldingPath::computeTrajectory()
     // Compute the Cartesian path
     double fraction = move_group_.computeCartesianPath(waypoints, eef_step, jump_threshold, trajectory, avoid_collisions, &error_code);
 
-    if (!(handlePlanError(error_code))){
+    if (!(handlePlanError(error_code, "planning"))){
         return false;
     }
 
@@ -91,20 +91,22 @@ bool weldingPath::computeTrajectory()
 }
 
 // Execute the planned trajectory
-void weldingPath::executeTrajectory()
+bool weldingPath::executeTrajectory()
 {
     if (planned_trajectory_.joint_trajectory.points.empty())
     {
         ROS_WARN("No valid trajectory to execute.");
-        return;
+        return false;
     }
 
-    move_group_.execute(planned_trajectory_);
+    // Execute trajectory and check success
+    if (handlePlanError(move_group_.execute(planned_trajectory_), "execution")){
+        poses_.clear();
+        return true;
+    }
+
+    return false; //default is false
 }
-
-// bool weldingPath::weldPath(){
-
-// } 
 
 // Method for moving into starting position
 bool weldingPath::startWeldPosition()
@@ -113,14 +115,16 @@ bool weldingPath::startWeldPosition()
 
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
-    if (handlePlanError(move_group_.plan(my_plan)))
+    if (handlePlanError(move_group_.plan(my_plan), "planning")) // check plan
     {
+        ROS_INFO("Execuing Path Now...");
+        ros::Duration(0.2).sleep(); // Sleep for 100 ms
+
         // Plan was successful, proceed with execution
         moveit::core::MoveItErrorCode execution_result = move_group_.execute(my_plan);
 
-        if (handlePlanError(execution_result))
+        if (handlePlanError(execution_result, "execution")) // check 
         {
-            ROS_INFO("Moving to desired pose");
             return true;
         }
 
@@ -134,13 +138,18 @@ bool weldingPath::startWeldPosition()
 }
 
 // Method for checking MoveIt error
-bool weldingPath::handlePlanError(moveit::core::MoveItErrorCode my_plan)
+bool weldingPath::handlePlanError(moveit::core::MoveItErrorCode my_plan, std::string planning)
 {
     // Handle different error codes explicitly
     switch (my_plan.val)
     {
     case moveit::core::MoveItErrorCode::SUCCESS:
-        ROS_INFO("Planning successful!");
+        if (planning == "planning"){
+            ROS_INFO("Planning successful!");
+        }
+        else{
+            ROS_INFO("Path Executed Successfully...");
+        }
         return true;
     case moveit::core::MoveItErrorCode::PLANNING_FAILED:
         ROS_ERROR("Error: Planning failed.");

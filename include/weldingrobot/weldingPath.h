@@ -9,6 +9,7 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <vector>
 #include <geometry_msgs/Pose.h>
+#include <string>
 
 class weldingPath {
 private:
@@ -52,16 +53,13 @@ public:
     bool computeTrajectory();
 
     // Execute the planned trajectory
-    void executeTrajectory();
+    bool executeTrajectory();
 
     // Method for moving into starting position
     bool startWeldPosition();
 
     // Method for checking move it error
-    bool handlePlanError(moveit::core::MoveItErrorCode my_plan);
-
-    // Method for following welding path
-    bool weldPath();
+    bool handlePlanError(moveit::core::MoveItErrorCode my_plan, std::string planning);
 
 };
 

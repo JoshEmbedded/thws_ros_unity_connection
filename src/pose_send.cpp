@@ -11,6 +11,7 @@
 #include <cmath> // For std::fabs()
 
 std::vector<geometry_msgs::Pose> received_poses; // Global or class member to store received poses
+bool new_poses_flag = false;                     // flag for new pose
 
 // Function to compare two Pose objects with a tolerance
 bool are_poses_approx_equal(const geometry_msgs::Pose &p1, const geometry_msgs::Pose &p2, double tolerance)
@@ -36,19 +37,26 @@ bool are_poses_approx_equal(const geometry_msgs::Pose &p1, const geometry_msgs::
 }
 
 // Function to check if two vectors of Pose are approximately equal
-bool are_poses_equal(const std::vector<geometry_msgs::Pose>& poses1, const std::vector<geometry_msgs::Pose>& poses2, double tolerance)
+bool are_poses_equal(const std::vector<geometry_msgs::Pose> &poses1, const std::vector<geometry_msgs::Pose> &poses2, double tolerance)
 {
-    if (poses1.size() != poses2.size()) {
+    if (poses1.size() != poses2.size())
+    {
         return false;
     }
-    
-    for (size_t i = 0; i < poses1.size(); ++i) {
-        if (!are_poses_approx_equal(poses1[i], poses2[i], tolerance)) {
-            return false;
+
+    // Assume they are identical unless we find a difference
+    bool identical_check = true;
+
+    for (size_t i = 0; i < poses1.size(); ++i)
+    {
+        if (!are_poses_approx_equal(poses1[i], poses2[i], tolerance))
+        {
+            identical_check = false; // Foound a difference
+            break;
         }
     }
-    
-    return true;
+
+    return identical_check;
 }
 
 void poseArrayCallback(const geometry_msgs::PoseArray::ConstPtr &msg)
@@ -57,20 +65,21 @@ void poseArrayCallback(const geometry_msgs::PoseArray::ConstPtr &msg)
     double tolerance = 0.001; // Adjust this value based on your precision needs
 
     // Check if the new poses are the same as the currently stored poses within the tolerance
-    if (received_poses.empty() || !are_poses_equal(received_poses, msg->poses, tolerance)) {
+    if (received_poses.empty() || !are_poses_equal(received_poses, msg->poses, tolerance))
+    {
+        
+        ROS_INFO("NEW POSES RECIEVED...");
+        ros::Duration(0.1).sleep(); // Sleep for 100 ms
         // New poses are different or we haven't received any poses yet
         received_poses = msg->poses;
-
+        new_poses_flag = true; // new poses in system
         // Log the received poses
         for (const auto &pose : received_poses)
         {
             ROS_INFO("Received Pose - x: %f, y: %f, z: %f", pose.position.x, pose.position.y, pose.position.z);
         }
-    } else {
-        // ROS_INFO("Received PoseArray is approximately identical to the previous one, ignoring.");
     }
 }
-
 
 int main(int argc, char **argv)
 {
@@ -90,35 +99,43 @@ int main(int argc, char **argv)
     {
 
         // Check if you have valid poses before processing
-        if (robot.poseCount() == 0)
+        if (new_poses_flag == false)
         {
             ROS_WARN("No poses received. Waiting for new poses...");
-            robot.addPoses(received_poses);
             ros::Duration(1.0).sleep(); // Optionally, wait for a second before checking again
             continue;                   // Skip the rest of the loop and start again
         }
 
-        // Send robot to starting postion
-        if (!(robot.startWeldPosition()))
+        if (new_poses_flag == true)
         {
-            ros::shutdown();
-            return 0;
-        }
+            
+            robot.addPoses(received_poses);
 
-        // Pause and wait for user input
-        if (robot.computeTrajectory())
-        {
-            std::string user_input;
-            std::cout << "Do you want to execute the trajectory? (y/n): ";
-            std::cin >> user_input;
-
-            if (user_input == "y" || user_input == "Y")
+            // Send robot to starting postion
+            if (!(robot.startWeldPosition()))
             {
-                robot.executeTrajectory();
+                ros::shutdown();
+                return 0;
             }
-            else
+
+            ROS_INFO("Robot at starting postion...");
+
+            // Pause and wait for user input
+            if (robot.computeTrajectory())
             {
-                std::cout << "Trajectory execution canceled." << std::endl;
+                std::string user_input;
+                std::cout << "Do you want to execute the trajectory? (y/n): ";
+                std::cin >> user_input;
+
+                if (user_input == "y" || user_input == "Y")
+                {
+                    robot.executeTrajectory();
+                    new_poses_flag = false;
+                }
+                else
+                {
+                    ROS_INFO("Trajectory execution cancelled.");
+                }
             }
         }
 
