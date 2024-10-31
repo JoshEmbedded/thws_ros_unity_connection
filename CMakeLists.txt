@@ -49,12 +49,15 @@ target_link_libraries(weldingPath_lib
 
 ## Declare a C++ executable
 add_executable(pose_send src/pose_send.cpp)
+add_executable(pose_plan src/posePlan.cpp)
 
 ## Add cmake target dependencies of the executable
 add_dependencies(pose_send ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} weldingPath_lib)
+add_dependencies(pose_plan ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Link the library to the executable
 target_link_libraries(pose_send weldingPath_lib ${catkin_LIBRARIES})
+target_link_libraries(pose_plan ${catkin_LIBRARIES})
 
 catkin_install_python(PROGRAMS
   src/csvPoints.py  # Update with the actual path to your Python script
