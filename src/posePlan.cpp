@@ -9,93 +9,79 @@
 #include <thread>
 #include <mutex>
 
+
 geometry_msgs::Pose incoming_pose;
 sensor_msgs::JointState unity_joints;
+bool pose_recieved = false;
+bool joints_received = false;
 
-std::mutex mtx;
-bool pose_received = false;
-bool joint_states_received = false;
+std::mutex mtx; // Create a mutex
+int sharedCounter = 0; // Shared variable
 
-void unityPoseCallback(const geometry_msgs::Pose::ConstPtr& msg) {
+void unityPoseCallback(const geometry_msgs::Pose::ConstPtr& msg){
+
     ROS_INFO("NEW POSES RECEIVED...");
+    ros::Duration(0.1).sleep(); // Sleep for 100 ms
     mtx.lock();
     incoming_pose = *msg;
-    pose_received = true;
+    ROS_INFO("Sphere pose: position(x: %f, y: %f, z: %f), orientation(x: %f, y: %f, z: %f, w: %f)", 
+             incoming_pose.position.x, incoming_pose.position.y, incoming_pose.position.z, 
+             incoming_pose.orientation.x, incoming_pose.orientation.y, incoming_pose.orientation.z, incoming_pose.orientation.w);
+    pose_recieved = true;
     mtx.unlock();
 }
 
-void unityJointStatesCallback(const sensor_msgs::JointState::ConstPtr& msg) {
+void unityJointStatesCallback(const sensor_msgs::JointState::ConstPtr& msg){
     ROS_INFO("NEW JOINTS STATES RECEIVED...");
+    ros::Duration(0.1).sleep(); // Sleep for 100 ms
     unity_joints = *msg;
-    joint_states_received = true;
-}
-
-bool computeTrajectory(moveit::planning_interface::MoveGroupInterface& move_group, 
-                       const geometry_msgs::Pose& target_pose, 
-                       const sensor_msgs::JointState& current_joint_states, 
-                       moveit::planning_interface::MoveGroupInterface::Plan& plan) 
-{
-    // Lock the mutex if necessary
-    mtx.lock();
-
-    // Set the robot's current joint state from the joint states message
-    robot_state::RobotState start_state(*move_group.getCurrentState());
-    start_state.setVariablePositions(current_joint_states.name, current_joint_states.position);
-    move_group.setStartState(start_state);
-
-    // Set the target pose
-    move_group.setPoseTarget(target_pose);
-
-    // Plan to the target pose
-    bool success = (move_group.plan(plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-
-    // Unlock the mutex if it was locked
-    mtx.unlock();
-
-    if (success) {
-        ROS_INFO("Trajectory planning succeeded.");
-    } else {
-        ROS_WARN("Trajectory planning failed.");
-    }
     
-    return success;
+    std::ostringstream joint_info;
+    for (size_t i = 0; i < unity_joints.name.size(); ++i) {
+        joint_info << "Joint Name: " << unity_joints.name[i] 
+                   << ", Position: " << unity_joints.position[i]
+                   << ", Velocity: " << unity_joints.velocity[i]
+                   << ", Effort: " << unity_joints.effort[i] << "\n";
+    }
+    joints_received = true;
+    
+    ROS_INFO_STREAM("Unity Joint States:\n" << joint_info.str());
 }
 
-int main(int argc, char **argv) {
+
+int main(int argc, char **argv)
+{
     ros::init(argc, argv, "pose_plan");
     ros::NodeHandle node_handle;
 
     ros::Subscriber target_pose = node_handle.subscribe("weld_pose", 10, unityPoseCallback);
-    ros::Subscriber unity_joints_sub = node_handle.subscribe("ur_joint_states", 10, unityJointStatesCallback);
+    ros::Subscriber unity_joints = node_handle.subscribe("ur_joint_states", 10, unityJointStatesCallback);
+
 
     ros::AsyncSpinner spinner(1);
     spinner.start();
 
-    // Set up the MoveIt! MoveGroup interface for the UR5e robot
-    static const std::string PLANNING_GROUP = "manipulator";  // Replace with your robot's planning group
-    moveit::planning_interface::MoveGroupInterface move_group(PLANNING_GROUP);
-    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    while (ros::ok())
+    {
 
-    while (ros::ok()) {
-        if (pose_received && joint_states_received) {
-            // Call the computeTrajectory function with the pose and joint states
-            if (computeTrajectory(move_group, incoming_pose, unity_joints, my_plan)) {
-                // Execute the plan if desired
-                move_group.execute(my_plan);
-            } else {
-                ROS_WARN("Unable to execute trajectory.");
-            }
-
-            // Reset flags after processing
-            pose_received = false;
-            joint_states_received = false;
-        } else {
-            ROS_WARN("Waiting for new poses and joint states...");
-            ros::Duration(1.0).sleep(); // Wait before checking again
+        if (!pose_recieved)
+        {
+            ROS_WARN("No poses received. Waiting for new poses...");
+            ros::Duration(1.0).sleep(); // Optionally, wait for a second before checking again
+            continue;                   // Skip the rest of the loop and start again
         }
+
+        if (!joints_received)
+        {
+            ROS_WARN("No joint_states received. Waiting for new joints...");
+            ros::Duration(1.0).sleep(); // Optionally, wait for a second before checking again
+            continue;                   // Skip the rest of the loop and start again
+        }
+
     }
 
     spinner.stop();
     ros::shutdown();
     return 0;
+
 }

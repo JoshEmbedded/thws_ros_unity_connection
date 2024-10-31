@@ -40,6 +40,8 @@ include_directories(
 ## Declare weldingPath.cpp as a library
 add_library(weldingPath_lib src/weldingPath.cpp)
 
+## add_library(moveit_error_handler src/moveit_error_handler.cpp)
+
 ## Link the library to the executable
 target_link_libraries(weldingPath_lib
     ${catkin_LIBRARIES}
@@ -50,14 +52,22 @@ target_link_libraries(weldingPath_lib
 ## Declare a C++ executable
 add_executable(pose_send src/pose_send.cpp)
 add_executable(pose_plan src/posePlan.cpp)
+add_executable(pose_plan_moveIt src/posePlan_moveIt.cpp)
 
 ## Add cmake target dependencies of the executable
 add_dependencies(pose_send ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} weldingPath_lib)
 add_dependencies(pose_plan ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(pose_plan_moveIt ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## add_dependencies(moveit_error_handler ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Link the library to the executable
 target_link_libraries(pose_send weldingPath_lib ${catkin_LIBRARIES})
 target_link_libraries(pose_plan ${catkin_LIBRARIES})
+target_link_libraries(pose_plan_moveIt ${catkin_LIBRARIES})
+
+
+## target_link_libraries(moveit_error_handler ${catkin_LIBRARIES})
 
 catkin_install_python(PROGRAMS
   src/csvPoints.py  # Update with the actual path to your Python script

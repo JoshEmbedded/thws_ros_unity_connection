@@ -5,6 +5,7 @@ using RosMessageTypes.Geometry;
 using RosMessageTypes.Sensor; // For JointState message type
 using RosMessageTypes.Std;    // For HeaderMsg
 using RosMessageTypes.BuiltinInterfaces;
+using System.Collections.Generic;
 
 /// <summary>
 ///
@@ -78,16 +79,17 @@ public class CustomRosPublisher : MonoBehaviour
     // Update joint positions
     for (int i = 0; i < joints.Length; i++)
     {
-        // Ensure jointPosition has at least one element
-        if (joints[i].jointPosition.dofCount > 0)
+        string moveitJointName;
+        if (linkToJointMapping.TryGetValue(joints[i].name, out moveitJointName))
         {
-            jointPositions[i] = joints[i].jointPosition[0]; // Assuming single DOF joints
+            jointNames[i] = moveitJointName; // Use MoveIt joint name
         }
         else
         {
-            Debug.LogWarning("Joint " + joints[i].name + " does not have a position.");
-            jointPositions[i] = 0; // Set to a default value or handle appropriately
+            Debug.LogWarning("Link name " + joints[i].name + " not found in mapping dictionary.");
         }
+
+        jointPositions[i] = joints[i].jointPosition[0];
     }
 
     // Create a header for the joint state message
@@ -101,5 +103,15 @@ public class CustomRosPublisher : MonoBehaviour
     JointStateMsg jointStateMsg = new JointStateMsg(header, jointNames, jointPositions, new double[joints.Length], new double[joints.Length]);
     ros.Publish(jointStateTopicName, jointStateMsg);
     }
+
+    private Dictionary<string, string> linkToJointMapping = new Dictionary<string, string>
+    {
+        { "shoulder_link", "shoulder_pan_joint" },
+        { "upper_arm_link", "shoulder_lift_joint" },
+        { "forearm_link", "elbow_joint" },
+        { "wrist_1_link", "wrist_1_joint" },
+        { "wrist_2_link", "wrist_2_joint" },
+        { "wrist_3_link", "wrist_3_joint" }
+    };
 
 }
