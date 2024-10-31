@@ -108,24 +108,16 @@ bool handlePlanError(moveit::core::MoveItErrorCode my_plan, std::string planning
 
 bool computeTrajectory(moveit::planning_interface::MoveGroupInterface &move_group,
                        const geometry_msgs::Pose &target_pose,
-                       const sensor_msgs::JointState &current_joint_states,
                        moveit::planning_interface::MoveGroupInterface::Plan &plan)
 {
     // Lock the mutex if necessary
     mtx.lock();
 
-    // Set the robot's current joint state from the joint states message
-    robot_state::RobotState start_state(*move_group.getCurrentState());
-    start_state.setVariablePositions(current_joint_states.name, current_joint_states.position);
-    move_group.setStartState(start_state);
-
-    // Set the target pose
+    // Set the target pose directly
     move_group.setPoseTarget(target_pose);
 
     // Plan to the target pose
     bool success = handlePlanError(move_group.plan(plan), "planning");
-
-    // bool success = (move_group.plan(plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
 
     // Unlock the mutex if it was locked
     mtx.unlock();
@@ -178,16 +170,16 @@ int main(int argc, char **argv)
 
             if (start_ready == false){
                 moveInitialJoints(move_group, unity_joints);
+                ROS_INFO("Moving sim to match unity position.");
+                ros::Duration(1.0).sleep(); // Wait before checking again
             }
             
-
-                // joint_pub.publish(unity_joints);
-
             // Call the computeTrajectory function with the pose and joint states
-            if (computeTrajectory(move_group, incoming_pose, unity_joints, my_plan))
+            if (computeTrajectory(move_group, incoming_pose, my_plan))
             {
                 // Execute the plan if desired
                 move_group.execute(my_plan);
+                start_ready = false;
             }
             else
             {

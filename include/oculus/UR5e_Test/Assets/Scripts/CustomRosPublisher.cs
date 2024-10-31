@@ -6,6 +6,7 @@ using RosMessageTypes.Sensor; // For JointState message type
 using RosMessageTypes.Std;    // For HeaderMsg
 using RosMessageTypes.BuiltinInterfaces;
 using System.Collections.Generic;
+using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 
 /// <summary>
 ///
@@ -61,8 +62,8 @@ public class CustomRosPublisher : MonoBehaviour
     private void UpdatePose()
     {
         // Get the current position and rotation of the sphere
-        Vector3 position = sphere.transform.position;
-        Quaternion rotation = sphere.transform.rotation;
+        Vector3<FLU> position = sphere.transform.position.To<FLU>();
+        Quaternion<FLU> rotation = sphere.transform.rotation.To<FLU>();
 
         // Create the pose message
         PoseMsg spherePos = new PoseMsg(
