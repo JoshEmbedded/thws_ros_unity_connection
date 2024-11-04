@@ -17,6 +17,7 @@ std::mutex mtx;
 bool pose_received = false;
 bool joint_states_received = false;
 bool start_ready = false;
+bool trajectroy_interupt = false;
 
 void unityPoseCallback(const geometry_msgs::Pose::ConstPtr &msg)
 {
@@ -145,6 +146,35 @@ bool moveInitialJoints(moveit::planning_interface::MoveGroupInterface& move_grou
     return success;
 }
 
+void sendTrajectory(moveit::planning_interface::MoveGroupInterface::Plan plan, ros::Publisher publish)
+{
+    moveit_msgs::RobotTrajectory& trajectory = plan.trajectory_;
+
+    sensor_msgs::JointState joint_state_msg;
+    
+    joint_state_msg.header.stamp = ros::Time::now();
+    joint_state_msg.name = trajectory.joint_trajectory.joint_names;
+
+    ros::Rate rate(60);
+
+    for (const auto& point : trajectory.joint_trajectory.points){
+        
+        // / Add intereupt for if new pose is called later.
+        // if (trajectroy_interupt)
+        // {
+        //     break;
+        // }
+        
+        joint_state_msg.position = point.positions; // Joint positions for each joint
+        joint_state_msg.velocity = point.velocities;
+        joint_state_msg.effort = point.effort;
+        // Publish the joint state
+        publish.publish(joint_state_msg);
+
+        rate.sleep();
+    }
+}
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "pose_plan");
@@ -152,10 +182,11 @@ int main(int argc, char **argv)
 
     ros::Subscriber target_pose = node_handle.subscribe("weld_pose", 10, unityPoseCallback);
     ros::Subscriber unity_joints_sub = node_handle.subscribe("ur_joint_states", 10, unityJointStatesCallback);
-    ros::Publisher joint_pub = node_handle.advertise<sensor_msgs::JointState>("joint_states", 10);
+    ros::Publisher joint_pub = node_handle.advertise<sensor_msgs::JointState>("unity_joint_commands", 10);
 
     ros::AsyncSpinner spinner(1);
     spinner.start();
+    
 
     // Set up the MoveIt! MoveGroup interface for the UR5e robot
     static const std::string PLANNING_GROUP = "manipulator"; // Replace with your robot's planning group
@@ -177,7 +208,7 @@ int main(int argc, char **argv)
             // Call the computeTrajectory function with the pose and joint states
             if (computeTrajectory(move_group, incoming_pose, my_plan))
             {
-                // Execute the plan if desired
+                sendTrajectory(my_plan, joint_pub);
                 move_group.execute(my_plan);
                 start_ready = false;
             }
