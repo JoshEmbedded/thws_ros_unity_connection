@@ -629,3 +629,76 @@ Received Import Request.
 Start importing Assets/Resources/ROSConnectionPrefab.prefab using Guid(9cb894664ae52fd20a01c10ce08f2a74) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7ec7907852b7cfcf518b06f6ff4afbc1') in 0.015417 seconds
   Import took 0.017895 seconds .
 
+========================================================================
+Received Import Request.
+  Time since last request: 912.140483 seconds.
+  path: Assets/urdf/UR30 URDF
+  artifactKey: Guid(d9a6ad99eaf05cb3c8c8e4962f2255a5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/urdf/UR30 URDF using Guid(d9a6ad99eaf05cb3c8c8e4962f2255a5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f2f5abe219e33d58c95691d135d90894') in 0.003566 seconds
+  Import took 0.009389 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.883728 seconds.
+  path: Assets/urdf/UR30 URDF/ur30.urdf
+  artifactKey: Guid(677ab2fe19a3d6e678c41c7426adae02) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/urdf/UR30 URDF/ur30.urdf using Guid(677ab2fe19a3d6e678c41c7426adae02) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c9d05f64aaff458bb79aed6cd09dab09') in 0.004370 seconds
+  Import took 0.010134 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 354.991314 seconds.
+  path: Assets/urdf/UR30 URDF/meshes
+  artifactKey: Guid(7a521901460ea3303a2290e1261d8bde) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/urdf/UR30 URDF/meshes using Guid(7a521901460ea3303a2290e1261d8bde) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '14d7061c683c346a43e8354f1a20a078') in 0.002845 seconds
+  Import took 0.009801 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.837139 seconds.
+  path: Assets/urdf/UR30 URDF/meshes/ur30
+  artifactKey: Guid(335edb15e37624fcfb51368bbaa81322) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/urdf/UR30 URDF/meshes/ur30 using Guid(335edb15e37624fcfb51368bbaa81322) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1a9ec7216ba8f049f248c5dfa5ffbea2') in 0.002857 seconds
+  Import took 0.009515 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 12.973940 seconds.
+  path: Assets/urdf/UR30 URDF/meshes/ur30/visual
+  artifactKey: Guid(25a1549e142e193219f394af1dc1528a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/urdf/UR30 URDF/meshes/ur30/visual using Guid(25a1549e142e193219f394af1dc1528a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cac14f64e09c59ebe80ef631fb4aa89c') in 0.002872 seconds
+  Import took 0.008752 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.067815 seconds.
+  path: Assets/urdf/UR30 URDF/meshes/ur30/visual/forearm.dae
+  artifactKey: Guid(d04137968807c55c58a6a567b833916f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/urdf/UR30 URDF/meshes/ur30/visual/forearm.dae using Guid(d04137968807c55c58a6a567b833916f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9af23692772d5bdf6450d255839b3669') in 0.181750 seconds
+  Import took 0.187401 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000268 seconds.
+  path: Assets/urdf/UR30 URDF/meshes/ur30/visual/UR30_DIFF_8bit_2K.png
+  artifactKey: Guid(d7fa120654f6dba65a6d23fbf0aac128) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/urdf/UR30 URDF/meshes/ur30/visual/UR30_DIFF_8bit_2K.png using Guid(d7fa120654f6dba65a6d23fbf0aac128) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bfea96f4f1b7ee9f446e5ee421e21e89') in 0.014752 seconds
+  Import took 0.018734 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000238 seconds.
+  path: Assets/urdf/UR30 URDF/meshes/ur30/visual/upperarm.dae
+  artifactKey: Guid(9328b37066a65c129962a648478d0dbb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/urdf/UR30 URDF/meshes/ur30/visual/upperarm.dae using Guid(9328b37066a65c129962a648478d0dbb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3253cca1fa64072c62ab3c76be80d88e') in 0.096393 seconds
+  Import took 0.099631 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 44.941339 seconds.
+  path: Assets/urdf/resources
+  artifactKey: Guid(ba0ca1c028a13923e8487e982baf9947) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/urdf/resources using Guid(ba0ca1c028a13923e8487e982baf9947) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'aa0ff3d59fafa5053f607a19746a187e') in 0.002520 seconds
+  Import took 0.007787 seconds .
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
