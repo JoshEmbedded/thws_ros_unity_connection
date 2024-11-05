@@ -81,16 +81,28 @@ public class CustomRosPublisher : MonoBehaviour
     for (int i = 0; i < joints.Length; i++)
     {
         string moveitJointName;
-        if (linkToJointMapping.TryGetValue(joints[i].name, out moveitJointName))
+
+        try 
         {
-            jointNames[i] = moveitJointName; // Use MoveIt joint name
+            jointPositions[i] = joints[i].jointPosition[0];
+            Debug.Log($"joint: {joints[i].jointPosition[0]}");
+            
+            if (linkToJointMapping.TryGetValue(joints[i].name, out moveitJointName))
+            {
+                jointNames[i] = moveitJointName; // Use MoveIt joint name
+            }
+            else
+            {
+                Debug.LogWarning("Link name " + joints[i].name + " not found in mapping dictionary.");
+            }
         }
-        else
+        
+        catch
         {
-            Debug.LogWarning("Link name " + joints[i].name + " not found in mapping dictionary.");
+            Debug.Log($"Information failed being stored in Joint: {joints[i].name}, Waa Waa it didnt work");
         }
 
-        jointPositions[i] = joints[i].jointPosition[0];
+        
     }
 
     // Create a header for the joint state message
@@ -101,7 +113,7 @@ public class CustomRosPublisher : MonoBehaviour
     };
 
     // Create and publish the joint state message
-    JointStateMsg jointStateMsg = new JointStateMsg(header, jointNames, jointPositions, new double[joints.Length], new double[joints.Length]);
+    JointStateMsg jointStateMsg = new JointStateMsg(header, jointNames, jointPositions, new double[jointNames.Length], new double[jointNames.Length]);
     ros.Publish(jointStateTopicName, jointStateMsg);
     }
 
@@ -112,7 +124,9 @@ public class CustomRosPublisher : MonoBehaviour
         { "forearm_link", "elbow_joint" },
         { "wrist_1_link", "wrist_1_joint" },
         { "wrist_2_link", "wrist_2_joint" },
-        { "wrist_3_link", "wrist_3_joint" }
+        { "wrist_3_link", "wrist_3_joint" },
+        { "flange", "flange"},
+        { "tool0", "tool0"}
     };
 
 }

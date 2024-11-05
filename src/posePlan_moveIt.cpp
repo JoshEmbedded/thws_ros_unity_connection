@@ -18,6 +18,7 @@ bool pose_received = false;
 bool joint_states_received = false;
 bool start_ready = false;
 bool trajectroy_interupt = false;
+int counter = 0;
 
 void unityPoseCallback(const geometry_msgs::Pose::ConstPtr &msg)
 {
@@ -155,7 +156,7 @@ void sendTrajectory(moveit::planning_interface::MoveGroupInterface::Plan plan, r
     joint_state_msg.header.stamp = ros::Time::now();
     joint_state_msg.name = trajectory.joint_trajectory.joint_names;
 
-    ros::Rate rate(60);
+    ros::Rate rate(2);
 
     for (const auto& point : trajectory.joint_trajectory.points){
         
@@ -170,9 +171,10 @@ void sendTrajectory(moveit::planning_interface::MoveGroupInterface::Plan plan, r
         joint_state_msg.effort = point.effort;
         // Publish the joint state
         publish.publish(joint_state_msg);
-
+        counter++;
         rate.sleep();
     }
+    ROS_INFO("Number of joint states sent: %d", counter);
 }
 
 int main(int argc, char **argv)
