@@ -62,7 +62,7 @@ The Unity scene to use is called **Ros Connection Test**.
 1. **Start the Listening Node**
 
     ```bash
-    roslaunch weldingrobot unity_listener
+    rosrun weldingrobot unity_listener
     ```
 
     This will:
