@@ -37,6 +37,14 @@ include_directories(
   ${moveit_ros_planning_interface_INCLUDE_DIRS}
 )
 
+# find_package(catkin REQUIRED COMPONENTS
+#   ros_tcp_endpoint
+# )
+
+# catkin_package(
+#   CATKIN_DEPENDS ros_tcp_endpoint
+# )
+
 ## Declare weldingPath.cpp as a library
 add_library(weldingPath_lib src/weldingPath.cpp)
 
