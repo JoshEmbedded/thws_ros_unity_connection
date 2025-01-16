@@ -1,6 +1,6 @@
 # Unity-ROS Connection Test Package
 
-This package demonstrates and tests the connection between Unity and ROS by integrating the pose of a sphere and joint states of a robot in Unity with trajectory planning in ROS. The goal is to establish seamless communication between the Unity environment and ROS for robotic motion planning and visualization. This connection will enable more complex projects and research in the future.
+This package demonstrates and tests the connection between Unity and ROS by integrating the pose of a sphere and joint states of a UR5e in Unity with trajectory planning in ROS. The goal is to establish seamless communication between the Unity environment and ROS for robotic motion planning and visualization. This connection will enable more complex projects and research in the future.
 
 ## Features
 - Publishes the **pose of a sphere** and **joint states** of a robot from Unity to ROS.
