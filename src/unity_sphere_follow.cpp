@@ -179,7 +179,7 @@ void sendTrajectory(moveit::planning_interface::MoveGroupInterface::Plan plan, r
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "pose_plan");
+    ros::init(argc, argv, "unity_sphere_moveit_node");
     ros::NodeHandle node_handle;
 
     ros::Subscriber target_pose = node_handle.subscribe("weld_pose", 10, unityPoseCallback);

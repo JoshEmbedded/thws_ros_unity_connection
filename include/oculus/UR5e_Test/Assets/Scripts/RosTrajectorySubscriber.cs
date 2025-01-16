@@ -45,7 +45,8 @@ public class RosTrajectorySubscriber : MonoBehaviour
         for (var i = 0; i < k_NumRobotJoints; i++)
         {
             linkName += LinkNames[i];
-    robotArticulationBody[i] = robot.transform.Find(linkName)?.GetComponent<ArticulationBody>();
+            Debug.Log($"Searching for link: {linkName}");
+            robotArticulationBody[i] = robot.transform.Find(linkName)?.GetComponent<ArticulationBody>();
             if (robotArticulationBody[i] == null)
     {
         Debug.LogError($"Could not find ArticulationBody component for {linkName}");
@@ -60,53 +61,7 @@ public class RosTrajectorySubscriber : MonoBehaviour
         Debug.Log("Attempting to connect to ROS...");
         ros.Subscribe<JointStateMsg>(topicName, ExecuteTrajectories);
         Debug.Log($"Subscribed to topic: {topicName}");
-
-        // Awake();
-        // ArticulationBody[] robotArticulationBody = robot.GetComponentsInChildren<ArticulationBody>();
-
-        // if (robotArticulationBody == null)
-        // {
-        //     Debug.LogError("ArticulationBody component not found on the assigned GameObject!");
-        // }
-        // Print out all ArticulationBody components in the robot
-        // PrintArticulationBodies();
     }
-
-    // Print all ArticulationBody components in the robot GameObject
-    // private void PrintArticulationBodies()
-    // {
-    //     // ArticulationBody articulationBodies = robot.GetComponentsInChildren<ArticulationBody>();
-    //     foreach (ArticulationBody body in robotArticulationBody)
-    //     {
-    //         Debug.Log($"ArticulationBody found: {body.name}");
-    //     }
-    // }
-
-    
-
-    // private void OnJointStateReceived(JointStateMsg jointState)
-    // {
-    //     Debug.Log("Received joint state!");
-
-    //     Debug.Log($"Received {jointState.position.Length} positions from ROS.");
-    //     Debug.Log($"Articulation body has {robot.dofCount} DOF.");
-
-    //     // Create a float array to hold the positions
-    //     List<float> positions = new List<float>();
-
-    //     // Convert each double position to float and add to the positions list
-    //     for (int i = 0; i < jointState.position.Length; i++)
-    //     {
-    //         float position = (float)jointState.position[i]; // Convert double to float
-    //         positions.Add(position); // Add to the list
-    //         Debug.Log($"Joint: {jointState.name[i]}, Position: {position}"); // Log each joint position
-    //     }
-
-    //     robot.SetJointPositions(positions);
-
-    //     // robotArticulationBody.SetJointPositions(positions);
-
-    // }
 
     /// <summary>
     ///     Execute trajectories from RobotMoveActionGoal topic.
@@ -123,60 +78,25 @@ public class RosTrajectorySubscriber : MonoBehaviour
             // Set the joint values for every joint
             for (var joint = 0; joint < robotArticulationBody.Length; joint++)
             {
+
+                if (robotArticulationBody == null) {
+                Debug.LogError("robotArticulationBody array is null!");
+                return;
+            }
+
+            if (joint < 0 || joint >= robotArticulationBody.Length) {
+                Debug.LogError($"Invalid joint index: {joint}. Array length: {robotArticulationBody.Length}");
+                return;
+            }
+
+            if (robotArticulationBody[joint] == null) {
+                Debug.LogError($"ArticulationBody at index {joint} is null!");
+                return;
+            }
                 var joint1XDrive = robotArticulationBody[joint].xDrive;
                 joint1XDrive.target = result[joint];
                 robotArticulationBody[joint].xDrive = joint1XDrive;
             }
 
     }
-    
-
-    
-    
-    // // Callback method for receiving joint state messages
-    // private void OnJointStateReceived(JointStateMsg jointState)
-    // {
-    //     Debug.Log("Received joint state!");
-
-    //     if (jointState.name.Length != jointState.position.Length)
-    //     {
-    //         Debug.LogError("Mismatch between joint names and positions array lengths!");
-    //         return; // Early exit to prevent out-of-bounds access
-    //     }
-
-    //     for (int i = 0; i < jointState.name.Length; i++)
-    //     {
-    //         string jointName = jointState.name[i];
-    //         float jointPosition = (float)jointState.position[i]; // Explicitly cast to float
-            
-    //         // Log joint name and position
-    //         Debug.Log($"Joint: {jointName}, Position: {jointPosition}");
-
-    //         // Find the corresponding link in the robot GameObject
-    //         if (jointToLinkMapping.TryGetValue(jointName, out string linkName))
-    //         {
-    //             // Find the ArticulationBody component for the link
-    //             ArticulationBody articulationBody = robot.transform.Find(linkName)?.GetComponent<ArticulationBody>();
-    //             if (articulationBody != null)
-    //             {
-    //                 // Set the target position of the articulation drive
-    //                 ArticulationDrive drive = articulationBody.xDrive; // Use xDrive, yDrive, or zDrive as necessary
-    //                 drive.target = jointPosition * Mathf.Rad2Deg; // Convert radians to degrees if your joint is defined in radians
-    //                 articulationBody.xDrive = drive; // Reassign the modified drive back to the articulation body
-    //             }
-    //             else
-    //             {
-    //                 Debug.LogWarning($"ArticulationBody for link {linkName} not found.");
-    //             }
-    //         }
-    //         else
-    //         {
-    //             Debug.LogWarning($"Joint {jointName} not found in mapping.");
-    //         }
-    //     }
-    // }
-
-
-
-    
 }

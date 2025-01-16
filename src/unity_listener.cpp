@@ -51,7 +51,7 @@ void unityJointStatesCallback(const sensor_msgs::JointState::ConstPtr& msg){
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "pose_plan");
+    ros::init(argc, argv, "unity_listener");
     ros::NodeHandle node_handle;
 
     ros::Subscriber target_pose = node_handle.subscribe("weld_pose", 10, unityPoseCallback);
