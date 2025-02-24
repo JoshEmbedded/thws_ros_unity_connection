@@ -1,0 +1,63 @@
+build/
+
+
+# Unity generated folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# Unity metadata and cache files
+*.pidb
+*.booproj
+*.suo
+*.user
+*.userprefs
+*.unityproj
+*.dll
+*.exe
+*.apk
+*.app
+*.prefab.unityweb
+*.a
+*.idb
+*.pdb
+*.mdb
+*.obj
+*.lib
+*.csproj
+*.sln
+*.swp
+*.lock
+*.cache
+*.preferences
+*.DS_Store
+*.tmproj
+
+nano .gitignore
+
+# VS Code and JetBrains Rider files
+.vscode/
+.idea/
+*.code-workspace
+
+# Visual Studio files
+.vs/
+*.csproj
+*.sln
+*.suo
+
+# Logs and temporary files
+*.log
+*.stacktrace
+
+# Other files
+*.coverage
+*.log
+*.coveragexml
+*.html
+*.css
+

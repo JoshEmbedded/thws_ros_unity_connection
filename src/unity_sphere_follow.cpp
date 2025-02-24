@@ -194,6 +194,7 @@ int main(int argc, char **argv)
     static const std::string PLANNING_GROUP = "manipulator"; // Replace with your robot's planning group
     moveit::planning_interface::MoveGroupInterface move_group(PLANNING_GROUP);
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    move_group.setMaxVelocityScalingFactor(0.2);
 
     while (ros::ok())
     {
